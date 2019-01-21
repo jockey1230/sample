@@ -36,6 +36,8 @@ docker build -t detail:latest .
 kubectl apply -f ./user.yml
 
 curl http://localhost/user
+#返回
+username is admin
 
 ```
 
