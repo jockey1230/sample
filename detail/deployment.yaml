@@ -1,36 +1,30 @@
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  name: detail-service
-spec:
-  selector:
-    app: detail
-  type: NodePort
-  ports:
-    - protocol: TCP
-      port: 8081
-      targetPort: 8081
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: example-detail
+  name: detail
   labels:
     app: detail
 spec:
-  replicas: 1
+  ports:
+    - port: 8081
+      name: http
   selector:
-    matchLabels:
-      app: detail
+    app: detail
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: detail
+spec:
+  replicas: 1
   template:
     metadata:
       labels:
         app: detail
     spec:
-      imagePullSecrets:
-      - name: pipeline-docker-registry
       containers:
-      - name: maven
-        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
-        ports:
-        - containerPort: 8081
+        - name: detail
+          image: detail:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
